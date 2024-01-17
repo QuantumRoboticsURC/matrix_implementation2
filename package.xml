@@ -4,8 +4,11 @@
   <name>matrix_implementation2</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="ximenachevalier15@gmail.com">ximena</maintainer>
+  <maintainer email="a01749887@tec.mx">santiago</maintainer>
   <license>TODO: License declaration</license>
+
+  <depend>rclpy</depend>
+  <depend>std_msgs</depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
