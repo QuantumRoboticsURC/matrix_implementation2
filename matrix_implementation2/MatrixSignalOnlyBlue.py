@@ -14,15 +14,13 @@ Notes:
 import rclpy
 from rclpy.node import Node 
 import Jetson.GPIO as GPIO
-from std_msgs.msg import String, Int8, Header
+from std_msgs.msg import Int8
 
 
 
-class MatrixSignalOnlyBlue:
+class MatrixSignalOnlyBlue(Node):
     def __init__(self):
-        # ________ ros atributes initialization ______
-        rclpy.init()
-        self.node = rclpy.create_node("matrix_signal_only_blue")  
+        super().__init__("matrix_signal_only_blue")  
 
         # ________ Jetson TX2 initialization ______
         self.pin_1 = 15
@@ -36,40 +34,37 @@ class MatrixSignalOnlyBlue:
         self.matrix_signal_to_color_dict = {1: "blue"}
         self.matrix_color = self.matrix_signal_to_color_dict[1]
 
-        self.matrix_signal_publisher = rclpy.Publisher('/matrix_signal', Int8, queue_size=1)
+        self.matrix_signal_publisher = self.create_publisher(Int8, '/matrix_signal', 10)
         self.matrix_signal_msg = Int8()
 
         self.matrix_signal_msg.data = 1
-        self.r = rclpy.create_rate(10)
+        self.timer = self.create_timer(0.1, self.main)
 
-                    
-                               
-
-    def matrix_signal_callback(self, data):
-        self.matrix_color = self.matrix_signal_to_color_dict[data.data]
-        #rospy.loginfo("new signal recieved, signal is: {s}".format(s = data.data))*
+    def matrix_signal_callback(self, msg):
+        self.matrix_color = self.matrix_signal_to_color_dict[msg.data]
+        #self.get_logger().info("new signal recieved, signal is: {s}".format(s = msg.data))
 
     def main(self):
-        while rclpy.ok():        
-            if self.matrix_color == "blue":     
-                GPIO.output(self.pin_3, GPIO.LOW)
-                GPIO.output(self.pin_2, GPIO.LOW)           
-                GPIO.output(self.pin_1, GPIO.HIGH)
-                self.matrix_signal_publisher.publish(self.matrix_signal_msg)    
-                self.r.sleep()
-
-        GPIO.output(self.pin_3, GPIO.HIGH)
-        GPIO.output(self.pin_1, GPIO.LOW)
-        GPIO.output(self.pin_2, GPIO.LOW)
+        if self.matrix_color == "blue":     
+            GPIO.output(self.pin_3, GPIO.LOW)
+            GPIO.output(self.pin_2, GPIO.LOW)           
+            GPIO.output(self.pin_1, GPIO.HIGH)
+            self.matrix_signal_publisher.publish(self.matrix_signal_msg)    
+        else:
+            GPIO.output(self.pin_3, GPIO.HIGH)
+            GPIO.output(self.pin_1, GPIO.LOW)
+            GPIO.output(self.pin_2, GPIO.LOW)
              
         GPIO.cleanup()
-   
 
+
+def main(args=None):
+    rclpy.init(args=args)
+    matrix_signal_only_blue = MatrixSignalOnlyBlue()
+    rclpy.spin(matrix_signal_only_blue)
+    matrix_signal_only_blue.destroy_node()
+    rclpy.shutdown()
 
 
 if __name__ == "__main__":
-    try:
-        matrix_signal_only_blue = MatrixSignalOnlyBlue()
-        matrix_signal_only_blue.main()
-    except rclpy.exceptions.ROSInterruptException:   
-        print("Exception")                           
+    main()

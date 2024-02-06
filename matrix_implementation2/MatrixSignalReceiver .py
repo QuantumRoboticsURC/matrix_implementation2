@@ -20,11 +20,7 @@ class MatrixSignalReciever(Node):
     def __init__(self):
         super().__init__('matrix_signal_receiver')
         # ________ ros atributes initialization ______
-
-        self.subscription = self.create_subscription(Int8, '/matrix_signal', self.matrix_signal_callback, 1)
-        #rospy.init_node("matrix_signal_reciever")
-        #rospy.Subscriber("/matrix_signal", Int8, self.matrix_signal_callback, queue_size=1)
-
+        self.subscription = self.create_subscription(Int8, '/matrix_signal', self.matrix_signal_callback, 10)
         # ________ Jetson TX2 initialization ______
         self.pin_1 = 15
         self.pin_2 = 22
@@ -37,9 +33,9 @@ class MatrixSignalReciever(Node):
         self.matrix_signal_to_color_dict = {0: "matrix_off", 1: "blue", 2: "red", 3: "green", 4:"quantum"}
         self.matrix_color = self.matrix_signal_to_color_dict[0]
 
-    def matrix_signal_callback(self, data):
-        self.matrix_color = self.matrix_signal_to_color_dict[data.data]
-        #rospy.loginfo("new signal recieved, signal is: {s}".format(s = data.data))
+    def matrix_signal_callback(self, msg):
+        self.matrix_color = self.matrix_signal_to_color_dict[msg.data]
+        #self.get_logger().info("new signal recieved, signal is: {s}".format(s = msg.data))
 
     def main(self):
         while rclpy.ok():
@@ -68,11 +64,14 @@ class MatrixSignalReciever(Node):
         GPIO.output(self.pin_2, GPIO.LOW)
         GPIO.cleanup()
 
-def main (args = None):
+
+def main(args=None):
     rclpy.init(args=args)
     matrix_signal_reciever = MatrixSignalReciever()
-    matrix_signal_reciever.main()
+    rclpy.spin(matrix_signal_reciever)
+    matrix_signal_reciever.destroy_node()
     rclpy.shutdown()
+
 
 if __name__ == "__main__":
     main()
