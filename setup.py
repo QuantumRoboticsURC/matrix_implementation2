@@ -13,13 +13,13 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='santiago',
-    maintainer_email='a01749887@tec.mx',
+    maintainer='shikur_orin',
+    maintainer_email='quantumrobotics.itesm@gmail.com',
     description='TODO: Package description',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
-        'console_scripts': [ 'matrixsignalreciver = matrix_implementation2.MatrixSignalReciever:main','matrixsignalonlyblue = matrix_implementation2.MatrixSignalReciever:main'
+        'console_scripts': [ 'matrixsignalonlyblue = matrix_implementation2.MatrixSignalOnlyBlue:main', 'matrixsignalreceiver = matrix_implementation2.MatrixSignalReceiver:main'
         ],
     },
 )

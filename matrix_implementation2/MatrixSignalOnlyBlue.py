@@ -1,16 +1,3 @@
-#!/usr/bin/env python3
-
-"""Made by:
-	José Ángel del Ángel
-    joseangeldelangel10@gmail.com
-
-Code description:
-TODO - add description
-
-Notes:
-
-"""
-
 import rclpy
 from rclpy.node import Node 
 import Jetson.GPIO as GPIO
@@ -51,11 +38,11 @@ class MatrixSignalOnlyBlue(Node):
             GPIO.output(self.pin_1, GPIO.HIGH)
             self.matrix_signal_publisher.publish(self.matrix_signal_msg)    
         else:
-            GPIO.output(self.pin_3, GPIO.HIGH)
-            GPIO.output(self.pin_1, GPIO.LOW)
-            GPIO.output(self.pin_2, GPIO.LOW)
-             
-        GPIO.cleanup()
+            # GPIO.output(self.pin_3, GPIO.HIGH)
+            # GPIO.output(self.pin_1, GPIO.LOW)
+            # GPIO.output(self.pin_2, GPIO.LOW)
+            print(1)
+        
 
 
 def main(args=None):
@@ -63,6 +50,7 @@ def main(args=None):
     matrix_signal_only_blue = MatrixSignalOnlyBlue()
     rclpy.spin(matrix_signal_only_blue)
     matrix_signal_only_blue.destroy_node()
+    GPIO.cleanup()
     rclpy.shutdown()
 
 

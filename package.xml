@@ -4,7 +4,7 @@
   <name>matrix_implementation2</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="a01749887@tec.mx">santiago</maintainer>
+  <maintainer email="quantumrobotics.itesm@gmail.com">shikur_orin</maintainer>
   <license>TODO: License declaration</license>
 
   <depend>rclpy</depend>
