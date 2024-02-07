@@ -19,38 +19,58 @@ class MatrixSignalReciever(Node):
         GPIO.setup(self.pin_3, GPIO.OUT)
         # ________ logic attributes initialization ______
         self.matrix_signal_to_color_dict = {0: "matrix_off", 1: "blue", 2: "red", 3: "green", 4:"quantum"}
-        self.matrix_color = self.matrix_signal_to_color_dict[0]
+        self.matrix_color = self.matrix_signal_to_color_dict[1]
 
     def matrix_signal_callback(self, msg):
         self.matrix_color = self.matrix_signal_to_color_dict[msg.data]
         #self.get_logger().info("new signal recieved, signal is: {s}".format(s = msg.data))
+        if self.matrix_color == "matrix_off":                
+            GPIO.output(self.pin_3, GPIO.LOW)
+            GPIO.output(self.pin_2, GPIO.LOW)
+            GPIO.output(self.pin_1, GPIO.LOW)                 
+        elif self.matrix_color == "blue":     
+            GPIO.output(self.pin_3, GPIO.LOW)
+            GPIO.output(self.pin_2, GPIO.LOW)           
+            GPIO.output(self.pin_1, GPIO.HIGH)                
+        elif self.matrix_color == "red":     
+            GPIO.output(self.pin_3, GPIO.LOW)
+            GPIO.output(self.pin_2, GPIO.HIGH)           
+            GPIO.output(self.pin_1, GPIO.LOW)                
+        elif self.matrix_color == "green":    
+            GPIO.output(self.pin_3, GPIO.LOW)
+            GPIO.output(self.pin_2, GPIO.HIGH)  
+            GPIO.output(self.pin_1, GPIO.HIGH)
+        elif self.matrix_color == "quantum" : 
+            GPIO.output(self.pin_3, GPIO.HIGH)
+            GPIO.output(self.pin_2, GPIO.LOW)  
+            GPIO.output(self.pin_1, GPIO.LOW)
+            
+        
 
     def main(self):
-        while rclpy.ok():
-            if self.matrix_color == "matrix_off":                
-                GPIO.output(self.pin_3, GPIO.LOW)
-                GPIO.output(self.pin_2, GPIO.LOW)
-                GPIO.output(self.pin_1, GPIO.LOW)                 
-            elif self.matrix_color == "blue":     
-                GPIO.output(self.pin_3, GPIO.LOW)
-                GPIO.output(self.pin_2, GPIO.LOW)           
-                GPIO.output(self.pin_1, GPIO.HIGH)                
-            elif self.matrix_color == "red":     
-                GPIO.output(self.pin_3, GPIO.LOW)
-                GPIO.output(self.pin_2, GPIO.HIGH)           
-                GPIO.output(self.pin_1, GPIO.LOW)                
-            elif self.matrix_color == "green":    
-                GPIO.output(self.pin_3, GPIO.LOW)
-                GPIO.output(self.pin_2, GPIO.HIGH)            
-                GPIO.output(self.pin_1, GPIO.HIGH)                
-            elif self.matrix_color == "quantum":
-                GPIO.output(self.pin_3, GPIO.HIGH)
-                GPIO.output(self.pin_2, GPIO.LOW)
-                GPIO.output(self.pin_1, GPIO.LOW)
-        GPIO.output(self.pin_3, GPIO.LOW)
-        GPIO.output(self.pin_1, GPIO.LOW)
-        GPIO.output(self.pin_2, GPIO.LOW)
-        GPIO.cleanup()
+        print(self.matrix_color)
+        if self.matrix_color == "matrix_off":                
+            GPIO.output(self.pin_3, GPIO.LOW)
+            GPIO.output(self.pin_2, GPIO.LOW)
+            GPIO.output(self.pin_1, GPIO.LOW)                 
+        elif self.matrix_color == "blue":     
+            GPIO.output(self.pin_3, GPIO.LOW)
+            GPIO.output(self.pin_2, GPIO.LOW)           
+            GPIO.output(self.pin_1, GPIO.HIGH)                
+        elif self.matrix_color == "red":     
+            GPIO.output(self.pin_3, GPIO.LOW)
+            GPIO.output(self.pin_2, GPIO.HIGH)           
+            GPIO.output(self.pin_1, GPIO.LOW)                
+        elif self.matrix_color == "green":    
+            GPIO.output(self.pin_3, GPIO.LOW)
+            GPIO.output(self.pin_2, GPIO.HIGH)
+            GPIO.output(self.pin_1, GPIO.HIGH)
+        elif self.matrix_color == "quantum" : 
+            GPIO.output(self.pin_3, GPIO.HIGH)
+            GPIO.output(self.pin_2, GPIO.LOW)  
+            GPIO.output(self.pin_1, GPIO.LOW)
+            
+
 
 
 def main(args=None):
@@ -58,6 +78,16 @@ def main(args=None):
     matrix_signal_reciever = MatrixSignalReciever()
     rclpy.spin(matrix_signal_reciever)
     matrix_signal_reciever.destroy_node()
+    GPIO.cleanup()
+    rclpy.shutdown()
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    matrix_signal_reciever = MatrixSignalReciever()
+    rclpy.spin(matrix_signal_reciever)
+    matrix_signal_reciever.destroy_node()
+    GPIO.cleanup()
     rclpy.shutdown()
 
 
